@@ -413,6 +413,7 @@ module FRP.Yampa (
     react,                --    ReactHandle a b
                           --    -> (DTime,Maybe a)
                           --    -> IO Bool
+    reactSilent,
 
     -- ** Embedding
                           --  (tentative: will be revisited)

@@ -28,6 +28,7 @@ module FRP.Yampa.Simulation (
     react,              --    ReactHandle a b
                         --    -> (DTime,Maybe a)
                         --    -> IO Bool
+    reactSilent,
 
 -- ** Embedding
                         --  (tentative: will be revisited)
@@ -161,6 +162,20 @@ react rh (dt,ma') =
          (sf',b') = (sfTF' sf) dt a'
      writeIORef rh (rs {rsSF = sf',rsA = a',rsB = b'})
      done <- actuate rh True b'
+     return done
+
+
+-- | Process a single input sample.
+reactSilent :: ReactHandle a b
+            -> (DTime,Maybe a)
+            -> IO Bool
+reactSilent rh (dt,ma') =
+  do rs@(ReactState {rsActuate = actuate, rsSF = sf, rsA = a, rsB
+ = _b }) <- readIORef rh
+     let a' = maybe a id ma'
+         (sf',b') = (sfTF' sf) dt a'
+     writeIORef rh (rs {rsSF = sf',rsA = a',rsB = b'})
+     done <- actuate rh False b'
      return done
 
 
